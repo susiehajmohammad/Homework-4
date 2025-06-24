@@ -219,6 +219,79 @@ wrapper_fun(responses = incorrect_data, predicted = pred, metrics = )
 
 ```
 
+## Task 3 - Querying an API and a Tidy-Style Function
+
+### Question 1
+
+```{r}
+#loading packages
+library(httr)
+library(jsonlite)
+library(tibble)
+
+#query parameters
+query <- "palestine"
+from_date <- "2025-06-01"
+api_key <- "47dd6790e4914d6b9f8a16e7f9ea2ac0" 
+
+#URL string
+URL_news <- paste0(
+  "https://newsapi.org/v2/everything?q=", query,
+  "&from=", from_date,
+  "&sortBy=publishedAt&apiKey=", api_key
+)
+
+#contacting API
+news_return <- httr::GET(URL_news)
+
+```
+
+### Question 2
+
+```{r}
+#parsing the news
+parsed_news <- fromJSON(rawToChar(news_return$content))
+
+#convert to tibble
+news_articles <- as_tibble(parsed_news$articles)
+
+#see results
+head(news_articles)
+```
+
+### Question 3
+
+```{r}
+#Write function for the above steps
+library(tidyverse)
+news_data_fun <- function(query, from_date, api_key) {
+  url <- "https://newsapi.org/v2/everything"
+  
+  response <- GET(url, query = list(
+    q = query,
+    from = from_date,
+    sortBy = "publishedAt",
+    apiKey = api_key
+  ))
+  
+  content_list <- content(response, as = "text")
+  parsed <- fromJSON(content_list, flatten = TRUE)
+  
+  articles <- as_tibble(parsed$articles)
+  
+  return(articles)
+}
+
+news_data_fun(query = "palestine", from_date = "2025-06-01", api_key = "47dd6790e4914d6b9f8a16e7f9ea2ac0" )
+
+
+```
+
+#### **Test your function for the title gamestop starting on June 1st, 2025.**
+
+```{r}
+news_data_fun(query = "gamestop", from_date = "2025-06-01", api_key = "47dd6790e4914d6b9f8a16e7f9ea2ac0" )
+```
 
 
 
