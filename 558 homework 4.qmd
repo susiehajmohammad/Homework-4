@@ -1,0 +1,30 @@
+---
+title: "558 Homework 4"
+author: "Susan Hajmohammad"
+format: pdf
+editor: visual
+---
+
+## Task 1: Conceptual Questions
+
+**1. What is the purpose of the lapply() function? What is the equivalent purrr function?** The lapply() function is a function that we can use instead of for loops, it lets us apply a function to the elements in a data structure that has the same length in each variable. The purrr package and map() function is just the tidyverse version of lapply().
+
+**2. Suppose we have a list called my_list. Each element of the list is a numeric data frame (all columns are numeric). We want use lapply() to run the code cor(numeric_matrix, method = "kendall") on each element of the list. Write code to do this below! (I’m really trying to ask you how you specify method = "kendall" when calling lapply())**
+
+```{r}
+#I'm not running this chunk because my_list doesn't exist
+#lapply(X = my_list, FUN = cor, method = "kendall")
+
+```
+
+**3. What are two advantages of using purrr functions instead of the BaseR apply family?**
+
+The main advantage to map() are the helpers that allow your code to be more compact. The second advantage is the consistency that comes with the map functions. I think this causes less confusion for users, for example all the first arguments in map functions is the data, when that could be different across the different types of apply() functions.
+
+**4. What is a side-effect function?**
+
+A side-effect function is a function that does something but doesn't have a result to return, they're more of an action function.
+
+**5. Why can you name a variable sd in a function and not cause any issues with the sd function?**
+
+Even though this isn't recommended, this would still allow the sd() function to work because of how things are scoped in R. So if you reference sd within the function it will think it's that variable, but if you do it outside of the function, it will go back to the global sd() function that R has.
