@@ -230,7 +230,7 @@ library(jsonlite)
 library(tibble)
 
 #query parameters
-query <- "palestine"
+query <- "pickleball"
 from_date <- "2025-06-01"
 api_key <- "47dd6790e4914d6b9f8a16e7f9ea2ac0" 
 
@@ -282,7 +282,7 @@ news_data_fun <- function(query, from_date, api_key) {
   return(articles)
 }
 
-news_data_fun(query = "palestine", from_date = "2025-06-01", api_key = "47dd6790e4914d6b9f8a16e7f9ea2ac0" )
+news_data_fun(query = "pickleball", from_date = "2025-06-01", api_key = "47dd6790e4914d6b9f8a16e7f9ea2ac0" )
 
 
 ```
