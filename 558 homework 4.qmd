@@ -28,3 +28,198 @@ A side-effect function is a function that does something but doesn't have a resu
 **5. Why can you name a variable sd in a function and not cause any issues with the sd function?**
 
 Even though this isn't recommended, this would still allow the sd() function to work because of how things are scoped in R. So if you reference sd within the function it will think it's that variable, but if you do it outside of the function, it will go back to the global sd() function that R has.
+
+## Task 2 - Writing R Functions
+
+### Question 1
+
+```{r}
+
+#getRMSE function with responses, predicted and elipses for additional arguments
+getRMSE <- function(responses, predicted, ...) {
+  #calculate the squared differences
+  diff_squared <- (responses - predicted)^2
+  #calculate RMSE and elipses for additional argument of na.rm = 
+  rmse <- sqrt(mean(diff_squared, ...))
+  return(rmse)
+}
+
+```
+
+### Question 2
+
+```{r}
+#simulated data
+set.seed(10)
+n <- 100
+x <- runif(n)
+resp <- 3 + 10*x + rnorm(n)
+pred <- predict(lm(resp ~ x), data.frame(x))
+```
+
+#### Test the getRSME() function
+
+```{r}
+getRMSE(responses = resp, predicted = pred)
+
+```
+
+#### Repeat after replacing two of the response values with missing values (NA_real\_)
+
+```{r}
+
+resp_nas <- resp
+#make first two values NA
+resp_nas[c(1,2)] <- NA_real_ 
+resp_nas
+```
+
+##### Test your RMSE function with and without specifying the behavior to deal with missing values
+
+```{r}
+#without specifying 
+getRMSE(responses = resp_nas, predicted = pred)
+
+#With specifying
+getRMSE(responses = resp_nas, predicted = pred, na.rm = TRUE)
+
+```
+
+### Question 3
+
+```{r}
+#write getMAE() with same specs as getRMSE()
+
+getMAE <- function(responses, predicted, ...) {
+  
+  #calculate the absolute differences
+  abs_diff <- abs(responses - predicted)
+  #calculate MAE and elipses for additional argument of na.rm = 
+  mae <- mean(abs_diff, ...)
+  return(mae)
+}
+
+```
+
+## Question 4
+
+```{r}
+#simulated data 
+set.seed(10)
+n <- 100
+x <- runif(n)
+resp <- 3 + 10*x + rnorm(n)
+pred <- predict(lm(resp ~ x), data.frame(x))
+```
+
+#### Test the getMAE() function
+
+```{r}
+getMAE(responses = resp, predicted = pred)
+
+```
+
+#### Repeat after replacing two of the response values with missing values (NA_real\_)
+
+```{r}
+
+resp_nas <- resp
+#make first two values NA
+resp_nas[c(1,2)] <- NA_real_ 
+resp_nas
+```
+
+##### Test your MAE function with and without specifying the behavior to deal with missing values
+
+```{r}
+#without specifying 
+getMAE(responses = resp_nas, predicted = pred)
+
+#With specifying
+getMAE(responses = resp_nas, predicted = pred, na.rm = TRUE)
+
+```
+
+```{r}
+
+wrapper_fun <- function(responses, predicted, metrics = c("mae", "rmse"), ...){
+   if (!(is.vector(responses) && is.atomic(responses) && is.numeric(responses))) {
+    message("Response values must be a numeric, atomic vector.")
+    return(NULL)
+  }
+  
+  if (!(is.vector(predicted) && is.atomic(predicted) && is.numeric(predicted))) {
+    message("Predicted values must be a numeric, atomic vector.")
+    return(NULL)
+  }
+  
+  list_to_return <- list()
+  
+  if ("mae" %in% metrics){
+    list_to_return$mae <- getMAE(responses, predicted, ...)
+  }
+  if ("rmse" %in% metrics){
+    list_to_return$RMSE <- getRMSE(responses, predicted, ...)
+  }
+  return(list_to_return)
+}
+
+```
+
+### Question 6
+
+```{r}
+
+set.seed(10)
+n <- 100
+x <- runif(n)
+resp <- 3 + 10*x + rnorm(n)
+pred <- predict(lm(resp ~ x), data.frame(x))
+
+```
+
+#### Test your new function using this data. Call it once asking for each metric individually and once specifying both metrics
+
+```{r}
+
+wrapper_fun(responses = resp, predicted = pred, metrics = "mae")
+
+wrapper_fun(responses = resp, predicted = pred, metrics = "rmse")
+
+wrapper_fun(responses = resp, predicted = pred, metrics = c("mae", "rmse"))
+
+```
+
+#### Repeat with replacing two of the response values with missing values (NA_real\_)
+
+```{r}
+resp_nas <- resp
+#make first two values NA
+resp_nas[c(1,2)] <- NA_real_ 
+resp_nas
+```
+
+```{r}
+wrapper_fun(responses = resp_nas, predicted = pred, metrics = "mae", na.rm = TRUE)
+
+wrapper_fun(responses = resp_nas, predicted = pred, metrics = "rmse", na.rm = TRUE)
+
+wrapper_fun(responses = resp_nas, predicted = pred, metrics = c("mae", "rmse"), na.rm = TRUE)
+
+```
+
+#### Finally, test your function by passing it incorrect data (i.e. a data frame or something else instead of vectors)
+
+```{r}
+
+incorrect_data <- data.frame(c(1,2,3), c(4,5,6))
+incorrect_data
+
+wrapper_fun(responses = incorrect_data, predicted = pred, metrics = )
+
+```
+
+
+
+
+
